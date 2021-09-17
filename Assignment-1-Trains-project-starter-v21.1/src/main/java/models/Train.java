@@ -177,9 +177,26 @@ public class Train {
      * @return
      */
     public boolean canAttach(Wagon wagon) {
-        // TODO
+        if (wagon == null) {
+            return true; // We can always attach nothing
+        }
 
-        return false;
+        if (this.isPassengerTrain() && !(wagon instanceof PassengerWagon)) {
+            return false;
+        }
+
+        if (this.isFreightTrain() && !(wagon instanceof FreightWagon)) {
+            return false;
+        }
+
+        int numAlreadyAttached = this.getNumberOfWagons();
+        int lenToAttach = 1;
+        while (wagon != null) {
+            lenToAttach += 1;
+            wagon = wagon.getNextWagon();
+        }
+
+        return this.engine.getMaxWagons() <= numAlreadyAttached + lenToAttach;
     }
 
     /**
@@ -190,9 +207,14 @@ public class Train {
      * @return  whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        // TODO
+        if (!canAttach(wagon)) {
+            return false;
+        }
 
-        return false;
+        Wagon rear = this.getLastWagonAttached();
+        rear.attachTail(wagon);
+
+        return true;
     }
 
 
@@ -204,9 +226,24 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtFront(Wagon wagon) {
-        // TODO
+        if (!canAttach(wagon)) {
+            return false;
+        }
 
-        return false;
+        if (!this.hasWagons()) {
+            // No wagons attached yet, so we can simply attach the front of the sequence as our first wagon
+            this.setFirstWagon(wagon);
+        }
+
+        Wagon oldFirstWagon = this.firstWagon;
+
+        // Attach the wagon at the front of the sequence as new first wagon
+        this.setFirstWagon(wagon);
+
+        // Reattach the old first wagon (and its tail) at the back
+        this.getLastWagonAttached().attachTail(oldFirstWagon);
+
+        return true;
     }
 
     /**
@@ -218,9 +255,27 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
-        // TODO
+        if (!canAttach(wagon)) {
+            return false;
+        }
 
-        return false;
+        Wagon oldPosition = this.findWagonAtPosition(position);
+        if (oldPosition == null) {
+            return false; // given position is invalid
+        }
+
+        // Get the tail of the sequence we want to insert
+        Wagon tailOfNewSequence = wagon.getLastWagonAttached();
+
+        // Attach the new sequence to the wagon before the given position
+        // (So the front of the sequence will be *at* the given position)
+        wagon.reAttachTo(oldPosition.getPreviousWagon());
+
+        // Reattach the sequence that we removed to attach the sequence in the given position at the end
+        // of the inserted sequence.
+        tailOfNewSequence.attachTail(oldPosition);
+
+        return true;
     }
 
     /**
@@ -234,9 +289,22 @@ public class Train {
      * @return  whether the move could be completed successfully
      */
     public boolean moveOneWagon(int wagonId, Train toTrain) {
-        // TODO
+        Wagon wagon = this.findWagonById(wagonId);
+        Wagon toRear = toTrain.getLastWagonAttached();
 
-        return false;
+        if (wagon == null) {
+            // No wagon with wagonId could be found
+            return false;
+        }
+
+        if (!toTrain.canAttach(wagon)) {
+            return false;
+        }
+
+        wagon.getNextWagon().reAttachTo(wagon.getPreviousWagon());
+        toRear.attachTail(wagon);
+
+        return true;
      }
 
     /**
@@ -250,9 +318,15 @@ public class Train {
      * @return  whether the move could be completed successfully
      */
     public boolean splitAtPosition(int position, Train toTrain) {
-        // TODO
+        Wagon wagonAtPosition = this.findWagonAtPosition(position);
+        if (!toTrain.canAttach(wagonAtPosition)) {
+            return false;
+        }
 
-        return false;
+        wagonAtPosition.getPreviousWagon().detachTail();
+        toTrain.getLastWagonAttached().attachTail(wagonAtPosition);
+
+        return true;
     }
 
     /**
@@ -263,8 +337,38 @@ public class Train {
      * (No change if the train has no wagons or only one wagon)
      */
     public void reverse() {
-        // TODO
+        if (!this.hasWagons()) {
+            return;
+        }
 
+        if (!this.firstWagon.hasNextWagon()) {
+            return;
+        }
+
+        /* Algorithm is as follows:
+         *
+         * Set two pointers: one to the second-to-last wagon, one to the last wagon
+         * Detach the last wagon and make it the first
+         * Attach the second-to-last wagon to the new first wagon
+         * Move the last pointer forwards
+         * Move the second-to-last pointer backwards
+         * Detach the tail of the second-to-last wagon
+         * Attach the second-to-last wagon to the tail of the last wagon
+         * Repeat until the we've iterated backwards over the entire sequence
+         */
+
+        Wagon last = this.getLastWagonAttached();
+        Wagon pointer = last.getPreviousWagon();
+        pointer.detachTail();
+        last.detachFront();
+        this.setFirstWagon(last);
+
+        while(pointer != null) {
+            last.attachTail(pointer);
+            pointer = pointer.getPreviousWagon();
+            pointer.detachTail();
+            last = last.getNextWagon();
+        }
     }
 
     // TODO
