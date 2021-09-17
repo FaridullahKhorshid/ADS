@@ -110,7 +110,6 @@ public abstract class Wagon {
 
         Wagon tail = this.nextWagon;
         this.nextWagon = null;
-        tail.detachFront();
 
         return tail;
     }
@@ -129,7 +128,6 @@ public abstract class Wagon {
 
         Wagon frontWagon = this.previousWagon;
         this.previousWagon = null;
-        frontWagon.detachTail();
 
         return frontWagon;
     }
