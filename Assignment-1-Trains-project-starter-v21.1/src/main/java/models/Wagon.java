@@ -49,9 +49,12 @@ public class Wagon {
      * @return  the wagon
      */
     public Wagon getLastWagonAttached() {
-        // TODO find the last wagon in the sequence
+        Wagon tail = this;
+        while (tail.hasNextWagon()) {
+            tail = tail.getNextWagon();
+        }
 
-        return null;
+        return tail;
     }
 
     /**
@@ -59,9 +62,15 @@ public class Wagon {
      * excluding this wagon itself.
      */
     public int getTailLength() {
-        // TODO traverse the tail and find its length
+        int len = 0;
+        Wagon tail = this;
 
-        return 0;
+        while(tail.hasNextWagon()) {
+            len++;
+            tail = tail.getNextWagon();
+        }
+
+        return len;
     }
 
     /**
@@ -72,9 +81,18 @@ public class Wagon {
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
      */
     public void attachTail(Wagon tail) {
-        // TODO verify the exceptions
+        // verify the exceptions
+        if (!this.hasNextWagon()) {
+            throw new IllegalStateException("Cannot attach a tail; wagon already has a tail attached");
+        }
 
-        // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
+        if (tail.hasPreviousWagon()) {
+            throw new IllegalStateException("The tail already has a wagon attached in front of it");
+        }
+
+        // attach the tail wagon to this wagon (sustaining the invariant propositions).
+        this.nextWagon = tail;
+        tail.attachFront(this); // TODO implement attachFront function
     }
 
     /**
@@ -83,10 +101,15 @@ public class Wagon {
      *          or <code>null</code> if it had no wagons attached to its tail.
      */
     public Wagon detachTail() {
-        // TODO detach the tail from this wagon (sustaining the invariant propositions).
-        //  and return the head wagon of that tail
+        if (this.nextWagon == null) {
+            return null;
+        }
 
-        return null;
+        Wagon tail = this.nextWagon;
+        this.nextWagon = null;
+        tail.detachFront();
+
+        return tail;
     }
 
     /**
@@ -96,10 +119,15 @@ public class Wagon {
      *          or <code>null</code> if it had no previousWagon.
      */
     public Wagon detachFront() {
-        // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
-        //   and return that predecessor
+        if (this.previousWagon == null) {
+            return null;
+        }
 
-        return null;
+        Wagon frontWagon = this.previousWagon;
+        this.previousWagon = null;
+        frontWagon.detachTail();
+
+        return frontWagon;
     }
 
     /**
