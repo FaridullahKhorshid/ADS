@@ -84,7 +84,7 @@ public abstract class Wagon {
      */
     public void attachTail(Wagon tail) {
         // verify the exceptions
-        if (!this.hasNextWagon()) {
+        if (this.hasNextWagon()) {
             throw new IllegalStateException("Cannot attach a tail; wagon already has a tail attached");
         }
 
@@ -94,7 +94,11 @@ public abstract class Wagon {
 
         // attach the tail wagon to this wagon (sustaining the invariant propositions).
         this.nextWagon = tail;
-        tail.attachFront(this); // TODO implement attachFront function
+        tail.setFront(this); // TODO implement attachFront function
+    }
+
+    private void setFront(Wagon front) {
+        this.previousWagon = front;
     }
 
     /**
