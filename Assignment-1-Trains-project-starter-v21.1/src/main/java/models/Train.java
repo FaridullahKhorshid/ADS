@@ -17,23 +17,17 @@ public class Train {
         this.origin = origin;
     }
 
-    /* three helper methods that are usefull in other methods */
+    /* three helper methods that are useful in other methods */
     public boolean hasWagons() {
-        // TODO
-
-        return false;
+        return this.firstWagon != null;
     }
 
     public boolean isPassengerTrain() {
-        // TODO
-
-        return false;
+        return this.firstWagon instanceof PassengerWagon;
     }
 
     public boolean isFreightTrain() {
-        // TODO
-
-        return false;
+        return this.firstWagon instanceof FreightWagon;
     }
 
     public Locomotive getEngine() {
@@ -51,25 +45,34 @@ public class Train {
      * @param wagon the first wagon of a sequence of wagons to be attached
      */
     public void setFirstWagon(Wagon wagon) {
-        // TODO
+        this.firstWagon = wagon;
     }
 
     /**
      * @return  the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
-        // TODO
+        int len = 0;
 
-        return 0;
+        Wagon tail = this.firstWagon;
+        while (tail.hasNextWagon()) {
+            tail = tail.getNextWagon();
+            len++;
+        }
+
+        return len;
     }
 
     /**
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
-        // TODO
+        Wagon tail = this.firstWagon;
+        while (tail.hasNextWagon()) {
+            tail = tail.getNextWagon();
+        }
 
-        return null;
+        return tail;
     }
 
     /**
@@ -77,9 +80,23 @@ public class Train {
      *          (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
-        // TODO
+        if (this.isFreightTrain()) {
+            return 0;
+        }
 
-        return 0;
+        if (!this.hasWagons()) {
+            return 0;
+        }
+
+        int seats = 0;
+        PassengerWagon tail = (PassengerWagon) this.firstWagon;
+
+        do {
+            seats += tail.getNumberOfSeats();
+            tail = (PassengerWagon) tail.getNextWagon();
+        } while (tail != null);
+
+        return seats;
     }
 
     /**
@@ -89,9 +106,23 @@ public class Train {
      *
      */
     public int getTotalMaxWeight() {
-        // TODO
+        if (this.isPassengerTrain()) {
+            return 0;
+        }
 
-        return 0;
+        if (!this.hasWagons()) {
+            return 0;
+        }
+
+        int maxWeight = 0;
+        FreightWagon tail = (FreightWagon) this.firstWagon;
+
+        do {
+            maxWeight += tail.getMaxWeight();
+            tail = (FreightWagon) tail.getNextWagon();
+        } while (tail != null);
+
+        return maxWeight;
     }
 
      /**
@@ -101,9 +132,22 @@ public class Train {
      *          (return null if the position is not valid for this train)
      */
     public Wagon findWagonAtPosition(int position) {
-        // TODO
+        if (!this.hasWagons()) {
+            return null;
+        }
 
-        return null;
+        Wagon wagon = this.firstWagon;
+        // TODO write test to make sure this works when position = 1
+        for (int i = 1; i <= position; i++) {
+            wagon = wagon.getNextWagon();
+
+            if (wagon == null) {
+                // We haven't reached the given position yet, but surpassed the last wagon of the train
+                return null;
+            }
+        }
+
+        return wagon;
     }
 
     /**
@@ -113,7 +157,14 @@ public class Train {
      *          (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
-        // TODO
+        Wagon wagon = this.firstWagon;
+
+        while(wagon.hasNextWagon()) {
+            if (wagon.getId() == wagonId) {
+                return wagon;
+            }
+            wagon = wagon.getNextWagon();
+        }
 
         return null;
     }

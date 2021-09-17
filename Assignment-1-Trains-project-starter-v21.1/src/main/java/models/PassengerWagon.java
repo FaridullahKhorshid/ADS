@@ -1,8 +1,6 @@
 package models;
 
-// TODO
 public class PassengerWagon extends Wagon {
-
 
     private int numberOfSeats;
 
