@@ -1,0 +1,6 @@
+models\Locomotive.class
+models\Wagon.class
+TrainsMain.class
+models\FreightWagon.class
+models\PassengerWagon.class
+models\Train.class
