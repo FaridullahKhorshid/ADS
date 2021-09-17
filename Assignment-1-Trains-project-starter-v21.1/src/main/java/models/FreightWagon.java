@@ -1,6 +1,5 @@
 package models;
 
-// TODO
 public class FreightWagon extends Wagon {
 
     private int maxWeight;
