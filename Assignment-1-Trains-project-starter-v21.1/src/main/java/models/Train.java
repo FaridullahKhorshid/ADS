@@ -145,7 +145,6 @@ public class Train {
         }
 
         Wagon wagon = this.firstWagon;
-        // TODO write test to make sure this works when position = 1
         for (int i = 1; i < position; i++) {
             wagon = wagon.getNextWagon();
 
@@ -279,6 +278,24 @@ public class Train {
     public boolean insertAtPosition(int position, Wagon wagon) {
         if (!canAttach(wagon)) {
             return false;
+        }
+
+        if (!this.hasWagons() && position != 1) {
+            // If this train has no wagons, only 1 is a valid position
+            return false;
+        }
+
+        // Decouple wagon to prepare for insertion
+        Wagon previous = wagon.getPreviousWagon();
+        if (previous != null) {
+            previous.detachTail();
+        }
+        wagon.detachFront();
+
+        if (!this.hasWagons()) {
+            // Must be trying to attach wagon to empty train, so set it as first
+            this.setFirstWagon(wagon);
+            return true;
         }
 
         Wagon oldPosition = this.findWagonAtPosition(position);
