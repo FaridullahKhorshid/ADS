@@ -387,9 +387,11 @@ public class Train {
         this.setFirstWagon(last);
 
         while(pointer != null) {
-            last.attachTail(pointer);
-            pointer.detachTail();
+            Wagon attachNext = pointer;
             pointer = pointer.getPreviousWagon();
+            attachNext.detachTail();
+            attachNext.detachFront();
+            last.attachTail(attachNext);
             last = last.getNextWagon();
         }
     }
