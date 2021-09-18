@@ -53,9 +53,8 @@ public class Train {
      */
     public int getNumberOfWagons() {
         int len = 0;
-
         Wagon tail = this.firstWagon;
-        while (tail.hasNextWagon()) {
+        while (tail != null) {
             tail = tail.getNextWagon();
             len++;
         }
@@ -67,7 +66,12 @@ public class Train {
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
+        if (!this.hasWagons()) {
+            return null;
+        }
+
         Wagon tail = this.firstWagon;
+
         while (tail.hasNextWagon()) {
             tail = tail.getNextWagon();
         }
@@ -178,7 +182,7 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
         if (wagon == null) {
-            return true; // We can always attach nothing
+            return false; // We can always attach nothing
         }
 
         if (this.isPassengerTrain() && !(wagon instanceof PassengerWagon)) {
@@ -190,13 +194,13 @@ public class Train {
         }
 
         int numAlreadyAttached = this.getNumberOfWagons();
-        int lenToAttach = 1;
+        int lenToAttach = 0;
         while (wagon != null) {
             lenToAttach += 1;
             wagon = wagon.getNextWagon();
         }
 
-        return this.engine.getMaxWagons() <= numAlreadyAttached + lenToAttach;
+        return this.engine.getMaxWagons() >= numAlreadyAttached + lenToAttach;
     }
 
     /**
@@ -209,6 +213,11 @@ public class Train {
     public boolean attachToRear(Wagon wagon) {
         if (!canAttach(wagon)) {
             return false;
+        }
+
+        if (!this.hasWagons()) {
+            this.setFirstWagon(wagon);
+            return true;
         }
 
         Wagon rear = this.getLastWagonAttached();
@@ -373,13 +382,36 @@ public class Train {
 
     // TODO
 
-    public boolean attachToRear(PassengerWagon wagon) {
-        return false;
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        output.append("[Loc-" + this.engine.getLocNumber() + "]");
+        Wagon wagon = this.firstWagon;
+        while (wagon != null) {
+            output.append("[Wagon-" + wagon.getId() + "]");
+            wagon = wagon.getNextWagon();
+        }
+        output.append(" with " + this.getNumberOfWagons() + " wagons from "
+                + this.getOrigin() + " to " + this.getDestination());
+
+        return output.toString();
     }
-    public boolean attachToRear(FreightWagon wagon) {
-        return false;
+
+    public String getOrigin() {
+        return this.origin;
     }
-    public boolean insertAtFront(FreightWagon wagon) {
-        return false;
+
+    public String getDestination() {
+        return this.destination;
     }
+
+//    public boolean attachToRear(PassengerWagon wagon) {
+//        return this.attachToRear(wagon);
+//    }
+//    public boolean attachToRear(FreightWagon wagon) {
+//        return this.attachToRear(wagon);
+//    }
+//    public boolean insertAtFront(FreightWagon wagon) {
+//        return this.insertAtFront(wagon);
+//    }
 }
