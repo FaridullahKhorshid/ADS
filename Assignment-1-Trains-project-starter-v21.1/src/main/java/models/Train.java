@@ -328,11 +328,25 @@ public class Train {
      */
     public boolean splitAtPosition(int position, Train toTrain) {
         Wagon wagonAtPosition = this.findWagonAtPosition(position);
+        if (wagonAtPosition == null) {
+            return false;
+        }
+
         if (!toTrain.canAttach(wagonAtPosition)) {
             return false;
         }
 
-        wagonAtPosition.getPreviousWagon().detachTail();
+        if (!toTrain.hasWagons()) {
+            toTrain.setFirstWagon(wagonAtPosition);
+            return true;
+        }
+
+        Wagon previous = wagonAtPosition.getPreviousWagon();
+        if (previous != null) {
+            previous.detachTail();
+        }
+
+        wagonAtPosition.detachFront();
         toTrain.getLastWagonAttached().attachTail(wagonAtPosition);
 
         return true;
