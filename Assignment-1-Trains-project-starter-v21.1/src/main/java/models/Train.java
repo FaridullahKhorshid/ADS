@@ -373,8 +373,8 @@ public class Train {
 
         // We're removing a wagon somewhere in the middle of this train
         wagon.detachFront();
-        wagon.detachTail();
         previous.detachTail();
+        wagon.detachTail();
         next.detachFront();
         next.reAttachTo(previous);
         toTrain.attachToRear(wagon);
