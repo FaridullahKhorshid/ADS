@@ -50,8 +50,13 @@ public class TrainTest {
         assertTrue(!passengerWagon3.hasNextWagon() || passengerWagon3 == passengerWagon3.getNextWagon().getPreviousWagon());
         assertTrue(!freightWagon1.hasNextWagon() || freightWagon1 == freightWagon1.getNextWagon().getPreviousWagon());
         assertTrue(!freightWagon2.hasNextWagon() || freightWagon2 == freightWagon2.getNextWagon().getPreviousWagon());
-        assertTrue(passengerTrain.getEngine() != null);
-        assertTrue(freightTrain.getEngine() != null);
+        assertTrue(!passengerWagon1.hasPreviousWagon() || passengerWagon1 == passengerWagon1.getPreviousWagon().getNextWagon());
+        assertTrue(!passengerWagon2.hasPreviousWagon() || passengerWagon2 == passengerWagon2.getPreviousWagon().getNextWagon());
+        assertTrue(!passengerWagon3.hasPreviousWagon() || passengerWagon3 == passengerWagon3.getPreviousWagon().getNextWagon());
+        assertTrue(!freightWagon1.hasPreviousWagon() || freightWagon1 == freightWagon1.getPreviousWagon().getNextWagon());
+        assertTrue(!freightWagon2.hasPreviousWagon() || freightWagon2 == freightWagon2.getPreviousWagon().getNextWagon());
+        assertNotNull(passengerTrain.getEngine());
+        assertNotNull(freightTrain.getEngine());
 
         for (Wagon wagon = passengerTrain.getFirstWagon(); wagon != null; wagon = wagon.getNextWagon()) {
             assertTrue(!wagon.hasPreviousWagon() || wagon == wagon.getPreviousWagon().getNextWagon());
