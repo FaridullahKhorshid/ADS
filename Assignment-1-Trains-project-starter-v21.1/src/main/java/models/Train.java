@@ -140,9 +140,13 @@ public class Train {
             return null;
         }
 
+        if (position == 0) {
+            return null;
+        }
+
         Wagon wagon = this.firstWagon;
         // TODO write test to make sure this works when position = 1
-        for (int i = 1; i <= position; i++) {
+        for (int i = 1; i < position; i++) {
             wagon = wagon.getNextWagon();
 
             if (wagon == null) {
@@ -163,7 +167,7 @@ public class Train {
     public Wagon findWagonById(int wagonId) {
         Wagon wagon = this.firstWagon;
 
-        while(wagon.hasNextWagon()) {
+        while(wagon != null) {
             if (wagon.getId() == wagonId) {
                 return wagon;
             }
@@ -243,9 +247,14 @@ public class Train {
             return false;
         }
 
+        if (wagon.hasPreviousWagon()) {
+            return false;
+        }
+
         if (!this.hasWagons()) {
             // No wagons attached yet, so we can simply attach the front of the sequence as our first wagon
             this.setFirstWagon(wagon);
+            return true;
         }
 
         Wagon oldFirstWagon = this.firstWagon;
@@ -254,7 +263,7 @@ public class Train {
         this.setFirstWagon(wagon);
 
         // Reattach the old first wagon (and its tail) at the back
-        this.getLastWagonAttached().attachTail(oldFirstWagon);
+        this.attachToRear(oldFirstWagon);
 
         return true;
     }
