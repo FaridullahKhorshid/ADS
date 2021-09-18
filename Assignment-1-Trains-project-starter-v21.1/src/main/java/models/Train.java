@@ -220,6 +220,10 @@ public class Train {
             return true;
         }
 
+        if (wagon.hasPreviousWagon()) {
+            return false;
+        }
+
         Wagon rear = this.getLastWagonAttached();
         rear.attachTail(wagon);
 
@@ -299,7 +303,6 @@ public class Train {
      */
     public boolean moveOneWagon(int wagonId, Train toTrain) {
         Wagon wagon = this.findWagonById(wagonId);
-        Wagon toRear = toTrain.getLastWagonAttached();
 
         if (wagon == null) {
             // No wagon with wagonId could be found
@@ -310,9 +313,40 @@ public class Train {
             return false;
         }
 
-        wagon.getNextWagon().reAttachTo(wagon.getPreviousWagon());
-        toRear.attachTail(wagon);
+        Wagon previous = wagon.getPreviousWagon();
+        Wagon next = wagon.getNextWagon();
 
+        if (previous != null && next == null) {
+            // We're removing the last wagon of this train
+            wagon.detachFront();
+            previous.detachTail();
+            toTrain.attachToRear(wagon);
+            return true;
+        }
+
+        if (previous == null && next != null) {
+            // We're removing the first wagon of this train and it has a tail
+            next.detachFront();
+            wagon.detachTail();
+            this.setFirstWagon(next);
+            toTrain.attachToRear(wagon);
+            return true;
+        }
+
+        if (previous == null && next == null) {
+            // We're removing the first wagon of this train and it has no tail
+            toTrain.attachToRear(wagon);
+            this.setFirstWagon(null);
+            return true;
+        }
+
+        // We're removing a wagon somewhere in the middle of this train
+        wagon.detachFront();
+        wagon.detachTail();
+        previous.detachTail();
+        next.detachFront();
+        next.reAttachTo(previous);
+        toTrain.attachToRear(wagon);
         return true;
      }
 
