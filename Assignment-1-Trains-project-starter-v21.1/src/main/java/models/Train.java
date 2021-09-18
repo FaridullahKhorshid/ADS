@@ -401,19 +401,17 @@ public class Train {
             return false;
         }
 
-        if (!toTrain.hasWagons()) {
-            toTrain.setFirstWagon(wagonAtPosition);
+        Wagon previous = wagonAtPosition.getPreviousWagon();
+        if (previous == null) {
+            // We're splitting at the first wagon of this train
+            this.setFirstWagon(null);
+            toTrain.attachToRear(wagonAtPosition);
             return true;
         }
 
-        Wagon previous = wagonAtPosition.getPreviousWagon();
-        if (previous != null) {
-            previous.detachTail();
-        }
-
+        previous.detachTail();
         wagonAtPosition.detachFront();
-        toTrain.getLastWagonAttached().attachTail(wagonAtPosition);
-
+        toTrain.attachToRear(wagonAtPosition);
         return true;
     }
 
