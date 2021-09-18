@@ -365,8 +365,8 @@ public class Train {
 
         while(pointer != null) {
             last.attachTail(pointer);
-            pointer = pointer.getPreviousWagon();
             pointer.detachTail();
+            pointer = pointer.getPreviousWagon();
             last = last.getNextWagon();
         }
     }
