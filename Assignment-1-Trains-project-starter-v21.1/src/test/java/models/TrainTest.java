@@ -50,6 +50,8 @@ public class TrainTest {
         assertTrue(!passengerWagon3.hasNextWagon() || passengerWagon3 == passengerWagon3.getNextWagon().getPreviousWagon());
         assertTrue(!freightWagon1.hasNextWagon() || freightWagon1 == freightWagon1.getNextWagon().getPreviousWagon());
         assertTrue(!freightWagon2.hasNextWagon() || freightWagon2 == freightWagon2.getNextWagon().getPreviousWagon());
+        assertTrue(passengerTrain.getEngine() != null);
+        assertTrue(freightTrain.getEngine() != null);
 
         for (Wagon wagon = passengerTrain.getFirstWagon(); wagon != null; wagon = wagon.getNextWagon()) {
             assertTrue(!wagon.hasPreviousWagon() || wagon == wagon.getPreviousWagon().getNextWagon());
