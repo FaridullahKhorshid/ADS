@@ -185,7 +185,12 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
         if (wagon == null) {
-            return false; // We can always attach nothing
+            return false; // We cannot attach nothing
+        }
+
+        if (this.findWagonById(wagon.getId()) != null) {
+            // Wagon is already attached
+            return false;
         }
 
         if (this.isPassengerTrain() && !(wagon instanceof PassengerWagon)) {
