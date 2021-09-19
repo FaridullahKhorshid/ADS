@@ -26,6 +26,9 @@ public class WagonTest {
         assertTrue(!passengerWagon2.hasNextWagon() || passengerWagon2 == passengerWagon2.getNextWagon().getPreviousWagon());
         assertTrue(!passengerWagon3.hasNextWagon() || passengerWagon3 == passengerWagon3.getNextWagon().getPreviousWagon());
         assertTrue(!passengerWagon4.hasNextWagon() || passengerWagon4 == passengerWagon4.getNextWagon().getPreviousWagon());
+        assertTrue(!passengerWagon1.hasPreviousWagon() || passengerWagon1 == passengerWagon1.getPreviousWagon().getNextWagon());
+        assertTrue(!passengerWagon2.hasPreviousWagon() || passengerWagon2 == passengerWagon2.getPreviousWagon().getNextWagon());
+        assertTrue(!passengerWagon3.hasPreviousWagon() || passengerWagon3 == passengerWagon3.getPreviousWagon().getNextWagon());
     }
 
     @Test
