@@ -83,8 +83,6 @@ public abstract class Wagon {
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
      */
     public void attachTail(Wagon tail) {
-
-
         // verify the exceptions
         if (this.hasNextWagon()) {
             throw new IllegalStateException("Cannot attach a tail (" + tail.toString() + ") to (" + this.toString() + "); wagon already has a tail attached");
@@ -96,7 +94,7 @@ public abstract class Wagon {
 
         // attach the tail wagon to this wagon (sustaining the invariant propositions).
         this.nextWagon = tail;
-        tail.setFront(this); // TODO implement attachFront function
+        tail.setFront(this);
     }
 
     private void setFront(Wagon front) {
@@ -154,11 +152,14 @@ public abstract class Wagon {
         //  attach this wagon to its new predecessor front (sustaining the invariant propositions).
 
         // detach front from the current wagon
-        if (this.hasPreviousWagon())
+        if (this.hasPreviousWagon()) {
             this.detachFront();
+        }
+
         // detach tail from the front of the current wagon
-        if (front.hasNextWagon())
+        if (front.hasNextWagon()) {
             front.detachTail();
+        }
 
         front.attachTail(this);
     }
@@ -239,6 +240,4 @@ public abstract class Wagon {
     public String toString() {
         return "[Wagon-" + id + "]";
     }
-
-    // TODO
 }
