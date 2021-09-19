@@ -35,6 +35,9 @@ public class Train {
     }
 
     public void setEngine(Locomotive engine) {
+        if (engine == null) {
+            throw new IllegalStateException("A Train must have an engine");
+        }
         this.engine = engine;
     }
 
@@ -92,17 +95,12 @@ public class Train {
             return 0;
         }
 
-        if (!this.hasWagons()) {
-            return 0;
-        }
-
         int seats = 0;
         PassengerWagon tail = (PassengerWagon) this.firstWagon;
-
-        do {
+        while(tail != null) {
             seats += tail.getNumberOfSeats();
             tail = (PassengerWagon) tail.getNextWagon();
-        } while (tail != null);
+        }
 
         return seats;
     }

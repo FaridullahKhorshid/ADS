@@ -94,11 +94,15 @@ public abstract class Wagon {
 
         // attach the tail wagon to this wagon (sustaining the invariant propositions).
         this.nextWagon = tail;
-        tail.setFront(this);
+        tail.setPreviousWagon(this);
     }
 
-    private void setFront(Wagon front) {
-        this.previousWagon = front;
+    private void setPreviousWagon(Wagon previous) {
+        this.previousWagon = previous;
+    }
+
+    private void setNextWagon(Wagon next) {
+        this.nextWagon = next;
     }
 
     /**
@@ -114,7 +118,7 @@ public abstract class Wagon {
 
         Wagon tail = this.nextWagon;
         this.nextWagon = null;
-        tail.previousWagon = null;
+        tail.setPreviousWagon(null);
 
         return tail;
     }
@@ -133,7 +137,7 @@ public abstract class Wagon {
 
         Wagon frontWagon = this.previousWagon;
         this.previousWagon = null;
-        frontWagon.nextWagon = null;
+        frontWagon.setNextWagon(null);
 
         return frontWagon;
     }
@@ -147,16 +151,12 @@ public abstract class Wagon {
      * @param front the wagon to which this wagon must be attached to.
      */
     public void reAttachTo(Wagon front) {
-
-        //  detach any existing connections that will be rearranged
-        //  attach this wagon to its new predecessor front (sustaining the invariant propositions).
-
-        // detach front from the current wagon
+        // detach the current front from this wagon
         if (this.hasPreviousWagon()) {
             this.detachFront();
         }
 
-        // detach tail from the front of the current wagon
+        // detach tail from front
         if (front.hasNextWagon()) {
             front.detachTail();
         }
@@ -177,7 +177,7 @@ public abstract class Wagon {
         // attach to the front if the there is tail of the current wagon
         if (tail != null && front != null) {
             front.attachTail(tail);
-            tail.setFront(front);
+            tail.setPreviousWagon(front);
         }
     }
 
@@ -216,7 +216,7 @@ public abstract class Wagon {
 
         if (prev != null) {
             // We're reversing in the middle of the train,
-            // so attach the current tail and attach the final wagon in the sequence
+            // so detach the current tail and attach the final wagon in the sequence
             prev.detachTail();
             prev.attachTail(last);
         }
