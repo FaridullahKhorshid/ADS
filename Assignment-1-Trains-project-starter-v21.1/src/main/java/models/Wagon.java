@@ -202,6 +202,7 @@ public abstract class Wagon {
          */
 
         if (!this.hasNextWagon()) {
+            // No next wagon, so nothing to reverse
             return this;
         }
 
@@ -213,14 +214,16 @@ public abstract class Wagon {
         last.detachFront();
 
         if (prev != null) {
-            // We've called reverse on the first wagon of the train
-            // and the first wagon has a tail
+            // We're reversing in the middle of the train,
+            // so attach the current tail and attach the final wagon in the sequence
             prev.detachTail();
             prev.attachTail(last);
         }
 
         while(pointer != prev && pointer != null) {
-            // We're attaching to previous, so if pointer hits previous, we've iterated over the sequence
+            // Previous is our pointer to the wagon we're attaching to,
+            // so if our pointer hits previous, we've iterated over the sequence.
+            // If pointer equals null, we've iterated the entire train.
             Wagon attachNext = pointer;
             pointer = pointer.getPreviousWagon();
             attachNext.detachTail();
