@@ -206,44 +206,35 @@ public abstract class Wagon {
          * Repeat until the we've iterated backwards over the entire sequence
          */
 
-        if (this.hasNextWagon()) {
-
-
-            Wagon last = this.getLastWagonAttached();
-            Wagon first = last;
-            Wagon prev = last.getPreviousWagon();
-
-
-            if (this.hasPreviousWagon()) {
-                Wagon front = this.getPreviousWagon();
-                last.reAttachTo(front);
-            }
-
-
-            while (prev != null) {
-
-                Wagon prevWagon = prev;
-                prev = prev.getPreviousWagon();
-
-                prevWagon.detachFront();
-                prevWagon.detachTail();
-
-                last.attachTail(prevWagon);
-                last = last.getNextWagon();
-            }
-
-
-            if (last != null) {
-                this.detachFront();
-                this.detachTail();
-
-                last.attachTail(this);
-            }
-
-            return first;
+        if (!this.hasNextWagon()) {
+            return this;
         }
 
-        return this;
+        Wagon prev = this.getPreviousWagon();
+        Wagon last = this.getLastWagonAttached();
+        Wagon newFirst = last;
+        Wagon pointer = last.getPreviousWagon();
+        last.detachTail();
+        last.detachFront();
+
+        if (prev != null) {
+            // We've called reverse on the first wagon of the train
+            // and the first wagon has a tail
+            prev.detachTail();
+            prev.attachTail(last);
+        }
+
+        while(pointer != prev && pointer != null) {
+            // We're attaching to previous, so if pointer hits previous, we've iterated over the sequence
+            Wagon attachNext = pointer;
+            pointer = pointer.getPreviousWagon();
+            attachNext.detachTail();
+            attachNext.detachFront();
+            last.attachTail(attachNext);
+            last = last.getNextWagon();
+        }
+
+        return newFirst;
     }
 
     @Override

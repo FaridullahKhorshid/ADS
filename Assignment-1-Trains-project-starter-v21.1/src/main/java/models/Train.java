@@ -431,32 +431,8 @@ public class Train {
             return;
         }
 
-        /* Algorithm is as follows:
-         *
-         * Set two pointers: one to the second-to-last wagon, one to the last wagon
-         * Detach the last wagon and make it the first
-         * Attach the second-to-last wagon to the new first wagon
-         * Move the last pointer forwards
-         * Move the second-to-last pointer backwards
-         * Detach the tail of the second-to-last wagon
-         * Attach the second-to-last wagon to the tail of the last wagon
-         * Repeat until the we've iterated backwards over the entire sequence
-         */
-
-        Wagon last = this.getLastWagonAttached();
-        Wagon pointer = last.getPreviousWagon();
-        pointer.detachTail();
-        last.detachFront();
-        this.setFirstWagon(last);
-
-        while(pointer != null) {
-            Wagon attachNext = pointer;
-            pointer = pointer.getPreviousWagon();
-            attachNext.detachTail();
-            attachNext.detachFront();
-            last.attachTail(attachNext);
-            last = last.getNextWagon();
-        }
+        Wagon newFirst = this.getFirstWagon().reverseSequence();
+        this.setFirstWagon(newFirst);
     }
 
     // TODO
