@@ -161,7 +161,6 @@ public abstract class Wagon {
             front.detachTail();
 
         front.attachTail(this);
-//        this.setFront(front);
     }
 
     /**
