@@ -17,4 +17,9 @@ public class Locomotive {
     public int getLocNumber() {
         return locNumber;
     }
+
+    @Override
+    public String toString() {
+        return "[Loc-" + locNumber + "]";
+    }
 }

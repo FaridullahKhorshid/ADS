@@ -442,12 +442,14 @@ public class Train {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("[Loc-").append(this.engine.getLocNumber()).append("]");
+
+        output.append(this.getEngine().toString());
         Wagon wagon = this.firstWagon;
         while (wagon != null) {
-            output.append("[Wagon-").append(wagon.getId()).append("]");
+            output.append(wagon.toString());
             wagon = wagon.getNextWagon();
         }
+
         output.append(" with ")
                 .append(this.getNumberOfWagons())
                 .append(" wagons from ")

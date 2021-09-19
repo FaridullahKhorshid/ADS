@@ -189,10 +189,6 @@ public abstract class Wagon {
      * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
      */
     public Wagon reverseSequence() {
-        // TODO provide an iterative implementation,
-        //   using attach- and detach methods of this class
-
-
         /* Algorithm is as follows:
          *
          * Set two pointers: one to the second-to-last wagon, one to the last wagon
