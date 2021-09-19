@@ -13,8 +13,7 @@ public class PassengerWagon extends Wagon {
         return this.numberOfSeats;
     }
 
-    public int setNumberOfSeats() {
-        return this.numberOfSeats;
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
     }
-
 }

@@ -14,8 +14,16 @@ public class Locomotive {
         return maxWagons;
     }
 
+    public void setMaxWagons(int maxWagons) {
+        this.maxWagons = maxWagons;
+    }
+
     public int getLocNumber() {
         return locNumber;
+    }
+
+    public void setLocNumber(int locNumber) {
+        this.locNumber = locNumber;
     }
 
     @Override
