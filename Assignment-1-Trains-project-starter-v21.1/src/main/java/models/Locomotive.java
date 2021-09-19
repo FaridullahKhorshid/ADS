@@ -26,4 +26,8 @@ public class Locomotive {
         this.locNumber = locNumber;
     }
 
+    @Override
+    public String toString() {
+        return "[Loc-" + locNumber + "]";
+    }
 }

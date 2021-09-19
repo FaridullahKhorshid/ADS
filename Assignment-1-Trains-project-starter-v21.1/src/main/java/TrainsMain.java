@@ -1,50 +1,41 @@
+import models.FreightWagon;
+import models.Locomotive;
 import models.PassengerWagon;
-import models.Wagon;
+import models.Train;
 
 public class TrainsMain {
 
     public static void main(String[] args) {
 
         System.out.println("Welcome to the HvA trains configurator");
-        PassengerWagon passengerWagon1 = new PassengerWagon(1, 2);
-        PassengerWagon passengerWagon2 = new PassengerWagon(2, 2);
-        PassengerWagon passengerWagon3 = new PassengerWagon(3, 2);
-        PassengerWagon passengerWagon4 = new PassengerWagon(4, 2);
+        Locomotive rembrandt = new Locomotive(24531, 7);
+        Train amsterdamParis = new Train(rembrandt, "Amsterdam", "Paris");
 
-        passengerWagon1.attachTail(passengerWagon2);
-        passengerWagon2.attachTail(passengerWagon3);
-        passengerWagon3.attachTail(passengerWagon4);
+        amsterdamParis.attachToRear(new PassengerWagon(8001,32));
+        amsterdamParis.attachToRear(new PassengerWagon(8002,32));
+        amsterdamParis.attachToRear(new PassengerWagon(8003,18));
+        amsterdamParis.attachToRear(new PassengerWagon(8004,44));
+        amsterdamParis.attachToRear(new PassengerWagon(8005,44));
+        amsterdamParis.attachToRear(new PassengerWagon(8006,44));
+        amsterdamParis.attachToRear(new PassengerWagon(8007,44));
+        System.out.println(amsterdamParis);
+        System.out.println("Total number of seats: " + amsterdamParis.getTotalNumberOfSeats());
 
-        Wagon rev = passengerWagon2.reverseSequence();
+        System.out.println("\nConfigurator result:");
 
-//        Locomotive rembrandt = new Locomotive(24531, 7);
-//        Train amsterdamParis = new Train(rembrandt, "Amsterdam", "Paris");
+        Locomotive vanGogh = new Locomotive(63427, 6);
+        Train amsterdamLondon = new Train(vanGogh, "Amsterdam", "London");
+        amsterdamParis.splitAtPosition(4, amsterdamLondon);
+        amsterdamLondon.reverse();
+        amsterdamLondon.insertAtFront(new FreightWagon(9001, 50000));
+        amsterdamParis.reverse();
+        amsterdamParis.splitAtPosition(1, amsterdamLondon);
+        amsterdamParis.attachToRear(amsterdamLondon.getLastWagonAttached());
+        amsterdamLondon.moveOneWagon(8003, amsterdamParis);
 
-//        amsterdamParis.attachToRear(new PassengerWagon(8001,32));
-//        amsterdamParis.attachToRear(new PassengerWagon(8002,32));
-//        amsterdamParis.attachToRear(new PassengerWagon(8003,18));
-//        amsterdamParis.attachToRear(new PassengerWagon(8004,44));
-//        amsterdamParis.attachToRear(new PassengerWagon(8005,44));
-//        amsterdamParis.attachToRear(new PassengerWagon(8006,44));
-//        amsterdamParis.attachToRear(new PassengerWagon(8007,44));
-//        System.out.println(amsterdamParis);
-//        System.out.println("Total number of seats: " + amsterdamParis.getTotalNumberOfSeats());
-//
-//        System.out.println("\nConfigurator result:");
-//
-//        Locomotive vanGogh = new Locomotive(63427, 6);
-//        Train amsterdamLondon = new Train(vanGogh, "Amsterdam", "London");
-//        amsterdamParis.splitAtPosition(4, amsterdamLondon);
-//        amsterdamLondon.reverse();
-//        amsterdamLondon.insertAtFront(new FreightWagon(9001, 50000));
-//        amsterdamParis.reverse();
-//        amsterdamParis.splitAtPosition(1, amsterdamLondon);
-//        amsterdamParis.attachToRear(amsterdamLondon.getLastWagonAttached());
-//        amsterdamLondon.moveOneWagon(8003, amsterdamParis);
-//
-//        System.out.println(amsterdamParis);
-//        System.out.println("Total number of seats: " + amsterdamParis.getTotalNumberOfSeats());
-//        System.out.println(amsterdamLondon);
-//        System.out.println("Total number of seats: " + amsterdamLondon.getTotalNumberOfSeats());
+        System.out.println(amsterdamParis);
+        System.out.println("Total number of seats: " + amsterdamParis.getTotalNumberOfSeats());
+        System.out.println(amsterdamLondon);
+        System.out.println("Total number of seats: " + amsterdamLondon.getTotalNumberOfSeats());
     }
 }

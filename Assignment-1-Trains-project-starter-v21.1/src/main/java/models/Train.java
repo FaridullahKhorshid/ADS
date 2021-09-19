@@ -34,6 +34,10 @@ public class Train {
         return engine;
     }
 
+    public void setEngine(Locomotive engine) {
+        this.engine = engine;
+    }
+
     public Wagon getFirstWagon() {
         return firstWagon;
     }
@@ -435,19 +439,23 @@ public class Train {
         this.setFirstWagon(newFirst);
     }
 
-    // TODO
-
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        output.append("[Loc-" + this.engine.getLocNumber() + "]");
+
+        output.append(this.getEngine().toString());
         Wagon wagon = this.firstWagon;
         while (wagon != null) {
-            output.append("[Wagon-" + wagon.getId() + "]");
+            output.append(wagon.toString());
             wagon = wagon.getNextWagon();
         }
-        output.append(" with " + this.getNumberOfWagons() + " wagons from "
-                + this.getOrigin() + " to " + this.getDestination());
+
+        output.append(" with ")
+                .append(this.getNumberOfWagons())
+                .append(" wagons from ")
+                .append(this.getOrigin())
+                .append(" to ")
+                .append(this.getDestination());
 
         return output.toString();
     }
@@ -456,17 +464,28 @@ public class Train {
         return this.origin;
     }
 
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
     public String getDestination() {
         return this.destination;
     }
 
-//    public boolean attachToRear(PassengerWagon wagon) {
-//        return this.attachToRear(wagon);
-//    }
-//    public boolean attachToRear(FreightWagon wagon) {
-//        return this.attachToRear(wagon);
-//    }
-//    public boolean insertAtFront(FreightWagon wagon) {
-//        return this.insertAtFront(wagon);
-//    }
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public boolean attachToRear(PassengerWagon wagon) {
+        // Cast to parent Wagon class to avoid recursive call
+        return this.attachToRear((Wagon) wagon);
+    }
+
+    public boolean attachToRear(FreightWagon wagon) {
+        return this.attachToRear((Wagon) wagon);
+    }
+
+    public boolean insertAtFront(FreightWagon wagon) {
+        return this.insertAtFront((Wagon) wagon);
+    }
 }
