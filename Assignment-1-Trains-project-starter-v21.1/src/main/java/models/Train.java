@@ -12,6 +12,9 @@ public class Train {
      */
 
     public Train(Locomotive engine, String origin, String destination) {
+        if (engine == null) {
+            throw new IllegalArgumentException("Engine cannot be null");
+        }
         this.engine = engine;
         this.destination = destination;
         this.origin = origin;
@@ -472,18 +475,5 @@ public class Train {
 
     public void setDestination(String destination) {
         this.destination = destination;
-    }
-
-    public boolean attachToRear(PassengerWagon wagon) {
-        // Cast to parent Wagon class to avoid recursive call
-        return this.attachToRear((Wagon) wagon);
-    }
-
-    public boolean attachToRear(FreightWagon wagon) {
-        return this.attachToRear((Wagon) wagon);
-    }
-
-    public boolean insertAtFront(FreightWagon wagon) {
-        return this.insertAtFront((Wagon) wagon);
     }
 }
