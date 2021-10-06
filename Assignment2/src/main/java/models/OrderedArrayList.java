@@ -109,16 +109,8 @@ public class OrderedArrayList<E>
             }
         }
 
-
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        ListIterator<E> iterator = this.listIterator(nSorted);
-        while(iterator.hasNext()) {
-            if (this.ordening.compare(iterator.next(), searchItem) == 0) {
-                return iterator.previousIndex();
-            }
-        }
-
-        return -1;
+        return linearSearch(searchItem);
     }
 
     /**
@@ -131,11 +123,44 @@ public class OrderedArrayList<E>
      * @return              the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
+        int index = indexofByRecursiveBinarySearch(searchItem, 0, nSorted - 1);
+        if (index != -1) { // Binary search found the item
+            return index;
+        }
 
-        // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
-        //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
+        return linearSearch(searchItem);
+    }
 
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
+    /**
+     * Recursive implementation of binary search, using the this.ordening comparator for comparison and equality
+     * @param searchItem
+     * @param low
+     * @param high
+     * @return
+     */
+    private int indexofByRecursiveBinarySearch(E searchItem, int low, int high) {
+        if (low > high) {
+            return -1;
+        }
+
+        int mid = low + (high - low) / 2;
+        int comparatorResult = this.ordening.compare(searchItem, this.get(mid));
+        if (comparatorResult < 0) {
+            return indexofByRecursiveBinarySearch(searchItem, low, mid - 1);
+        } else if (comparatorResult > 0) {
+            return indexofByRecursiveBinarySearch(searchItem, mid + 1, high);
+        } else {
+            return mid;
+        }
+    }
+
+    private int linearSearch(E searchItem) {
+        ListIterator<E> iterator = this.listIterator(nSorted);
+        while(iterator.hasNext()) {
+            if (this.ordening.compare(iterator.next(), searchItem) == 0) {
+                return iterator.previousIndex();
+            }
+        }
 
         return -1;
     }

@@ -116,4 +116,26 @@ public class ProductsListTest {
         assertSame(9, list.indexOfByIterativeBinarySearch(9));
         assertSame(-1, list.indexOfByIterativeBinarySearch(25));
     }
+
+    @Test
+    public void recursiveBinarySearch() {
+        class IntComparator implements Comparator<Integer> {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o1, o2);
+            }
+        }
+
+        IntComparator comparator = new IntComparator();
+
+        OrderedArrayList<Integer> list = new OrderedArrayList<Integer>(comparator);
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+
+        assertSame(1, list.indexOfByRecursiveBinarySearch(1));
+        assertSame(5, list.indexOfByRecursiveBinarySearch(5));
+        assertSame(9, list.indexOfByRecursiveBinarySearch(9));
+        assertSame(-1, list.indexOfByRecursiveBinarySearch(25));
+    }
 }
