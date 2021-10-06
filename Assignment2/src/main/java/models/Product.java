@@ -24,10 +24,29 @@ public class Product {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
+        if (textLine == null) {
+            return null;
+        }
+
         List<String> parsedLine = Arrays.asList(textLine.split(","));
-        long barcode = Long.parseLong(parsedLine.get(0));
-        String title = parsedLine.get(1).trim();
-        double price = Double.parseDouble(parsedLine.get(2));
+
+        if (parsedLine.size() < 3) {
+            // Text line misses information
+            return null;
+        }
+
+        long barcode;
+        String title;
+        double price;
+
+        try {
+            barcode = Long.parseLong(parsedLine.get(0));
+            title = parsedLine.get(1).trim();
+            price = Double.parseDouble(parsedLine.get(2));
+        } catch (NumberFormatException e) {
+            // Text line is corrupted
+            return null;
+        }
 
         return new Product(barcode, title, price);
     }

@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Purchase {
@@ -20,12 +21,36 @@ public class Purchase {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Purchase fromLine(String textLine, List<Product> products) {
-        Purchase newPurchase = null;
+        if (textLine == null || products == null) {
+            return null;
+        }
 
-        // TODO convert the information in the textLine to a new Purchase instance
-        //  use the products.indexOf to find the product that is associated with the barcode of the purchase
+        List<String> parsedLine = Arrays.asList(textLine.split(","));
+        if (parsedLine.size() < 2) {
+            // Incomplete line
+            return null;
+        }
 
-        return newPurchase;
+        long barcode;
+        int count;
+
+        try {
+            barcode = Long.parseLong(parsedLine.get(0));
+            count = Integer.parseInt(parsedLine.get(1));
+        } catch(NumberFormatException e) {
+            // Corrupted line
+            return null;
+        }
+
+        int index = products.indexOf(new Product(barcode));
+        if (index == -1) {
+            // No product exists with this barcode
+            return null;
+        }
+
+        Product product = products.get(index);
+
+        return new Purchase(product, count);
     }
 
     /**
