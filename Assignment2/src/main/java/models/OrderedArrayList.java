@@ -49,8 +49,18 @@ public class OrderedArrayList<E>
 
     @Override
     public boolean add(E e) {
-        // Temporary implementation for testing, (probably) not correct!
+        // TODO: write real implementation. For now, temporarily increment on each add to test binary search
         this.nSorted++;
+
+//        if (this.isEmpty()) {
+              // List is sorted by definition if it contains only 1 item
+//            nSorted++;
+//        } else if (this.size() == this.nSorted && this.ordening.compare(e, this.get(this.size() - 1)) > 0) {
+//            // All items were sorted AND the item we're adding is greater than the last item in the list,
+//            // therefore the list remains sorted
+//            nSorted++;
+//        }
+
         return super.add(e);
     }
 
