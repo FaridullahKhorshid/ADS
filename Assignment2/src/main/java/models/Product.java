@@ -42,7 +42,7 @@ public class Product {
         try {
             barcode = Long.parseLong(parsedLine.get(0));
             title = parsedLine.get(1).trim();
-            price = Double.parseDouble(parsedLine.get(2));
+            price = Double.parseDouble(parsedLine.get(2).trim());
         } catch (NumberFormatException e) {
             // Text line is corrupted
             return null;

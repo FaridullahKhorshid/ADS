@@ -36,7 +36,7 @@ public class Purchase {
 
         try {
             barcode = Long.parseLong(parsedLine.get(0));
-            count = Integer.parseInt(parsedLine.get(1));
+            count = Integer.parseInt(parsedLine.get(1).trim());
         } catch(NumberFormatException e) {
             // Corrupted line
             return null;
