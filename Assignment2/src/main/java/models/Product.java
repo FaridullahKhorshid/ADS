@@ -1,5 +1,8 @@
 package models;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Product {
     private final long barcode;
     private String title;
@@ -21,9 +24,11 @@ public class Product {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
-        Product newProduct = null;
-
-        // TODO convert the information in line to a new Product instance
+        List<String> parsedLine = Arrays.asList(textLine.split(","));
+        long barcode = Long.parseLong(parsedLine.get(0));
+        String title = parsedLine.get(1).trim();
+        double price = Double.parseDouble(parsedLine.get(2));
+        Product newProduct = new Product(barcode, title, price);
 
         return newProduct;
     }
