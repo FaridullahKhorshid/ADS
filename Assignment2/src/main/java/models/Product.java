@@ -1,7 +1,9 @@
 package models;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class Product {
     private final long barcode;
@@ -75,4 +77,20 @@ public class Product {
     }
 
     // TODO add public and private methods as per your requirements
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getBarcode());
+        sb.append("/");
+        sb.append(this.getTitle());
+        sb.append("/");
+        // Set the locale to use a period instead of a comma for fractionals
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.UK);
+        // Print trailing zeroes up to and including the second fractional
+        numberFormat.setMinimumFractionDigits(2);
+        sb.append(numberFormat.format(this.getPrice()));
+        return sb.toString();
+    }
 }
