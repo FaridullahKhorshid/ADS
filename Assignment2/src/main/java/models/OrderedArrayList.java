@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.ListIterator;
 import java.util.function.BinaryOperator;
 
 public class OrderedArrayList<E>
@@ -46,6 +47,13 @@ public class OrderedArrayList<E>
     //  such that they sustain the representation invariant of OrderedArrayList
     //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
 
+    @Override
+    public boolean add(E e) {
+        // Temporary implementation for testing, (probably) not correct!
+        this.nSorted++;
+        return super.add(e);
+    }
+
 
     @Override
     public void sort() {
@@ -87,8 +95,28 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
+        int low = 0;
+        int high = this.nSorted - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int comparatorResult = this.ordening.compare(searchItem, this.get(mid));
+            if (comparatorResult < 0) {
+                high = mid - 1;
+            } else if (comparatorResult > 0) {
+                low = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+
 
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
+        ListIterator<E> iterator = this.listIterator(nSorted);
+        while(iterator.hasNext()) {
+            if (this.ordening.compare(iterator.next(), searchItem) == 0) {
+                return iterator.previousIndex();
+            }
+        }
 
         return -1;
     }
