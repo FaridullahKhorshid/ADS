@@ -30,4 +30,19 @@ public class ProductTest {
         assertEquals("Bounty bar", product2.getTitle());
         assertEquals(0.85, product2.getPrice());
     }
+
+    @Test
+    public void returnsNullIfTextLineIncorrect() {
+        Product product1 = Product.fromLine("111111111111111, , 0.90");
+        Product product2 = Product.fromLine("222222222222222, Bounty bar");
+        Product product3 = Product.fromLine("222222222222222, 0.90");
+        Product product4 = Product.fromLine(", Bounty bar, 0.90");
+        Product product5 = Product.fromLine("111111111111111; Mars bar; 0.90");
+
+        assertNull(product1);
+        assertNull(product2);
+        assertNull(product3);
+        assertNull(product4);
+        assertNull(product5);
+    }
 }

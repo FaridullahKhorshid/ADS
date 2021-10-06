@@ -41,4 +41,15 @@ public class PurchaseTest {
         Purchase purchase1 = Purchase.fromLine("111111111111111, 10", products);
         assertEquals("111111111111111/Stroopwafels 10st/10/12.30", purchase1.toString());
     }
+
+    @Test
+    public void returnsNullIfTextLineIsIncorrect() {
+        Purchase purchase1 = Purchase.fromLine("111111111111111, ", products);
+        Purchase purchase2 = Purchase.fromLine(", 20", products);
+        Purchase purchase3 = Purchase.fromLine("Thisisastring, 30", products);
+
+        assertNull(purchase1);
+        assertNull(purchase2);
+        assertNull(purchase3);
+    }
 }

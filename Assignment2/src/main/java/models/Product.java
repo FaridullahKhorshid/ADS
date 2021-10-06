@@ -26,7 +26,7 @@ public class Product {
      *          or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
-        if (textLine == null) {
+        if (textLine == null || textLine.length() == 0) {
             return null;
         }
 
@@ -37,13 +37,16 @@ public class Product {
             return null;
         }
 
+        String title = parsedLine.get(1).trim();
+        if (title.length() == 0) {
+            return null;
+        }
+
         long barcode;
-        String title;
         double price;
 
         try {
             barcode = Long.parseLong(parsedLine.get(0));
-            title = parsedLine.get(1).trim();
             price = Double.parseDouble(parsedLine.get(2).trim());
         } catch (NumberFormatException e) {
             // Text line is corrupted
