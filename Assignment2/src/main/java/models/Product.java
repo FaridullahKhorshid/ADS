@@ -28,9 +28,8 @@ public class Product {
         long barcode = Long.parseLong(parsedLine.get(0));
         String title = parsedLine.get(1).trim();
         double price = Double.parseDouble(parsedLine.get(2));
-        Product newProduct = new Product(barcode, title, price);
 
-        return newProduct;
+        return new Product(barcode, title, price);
     }
 
     public long getBarcode() {
