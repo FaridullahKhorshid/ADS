@@ -48,20 +48,53 @@ public class OrderedArrayList<E>
     //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
 
     @Override
-    public boolean add(E e) {
-        // TODO: write real implementation. For now, temporarily increment on each add to test binary search
-        this.nSorted++;
+    public boolean add(E element) {
+        boolean incrementSorted = shouldIncrementSortedBeforeAdd(this.size(), element);
+        if (incrementSorted) {
+            this.nSorted++;
+        }
 
-//        if (this.isEmpty()) {
-              // List is sorted by definition if it contains only 1 item
-//            nSorted++;
-//        } else if (this.size() == this.nSorted && this.ordening.compare(e, this.get(this.size() - 1)) > 0) {
-//            // All items were sorted AND the item we're adding is greater than the last item in the list,
-//            // therefore the list remains sorted
-//            nSorted++;
-//        }
+        return super.add(element);
+    }
 
-        return super.add(e);
+    @Override
+    public void add(int index, E element) {
+        boolean incrementSorted = shouldIncrementSortedBeforeAdd(this.size(), element);
+        if (incrementSorted) {
+            this.nSorted++;
+        }
+
+        super.add(index, element);
+    }
+
+    /**
+     * Checks if nSorted should be incremented to sustain the invariant if element were to be inserted at index
+     * using this.ordening to compare
+     *
+     * @param index the index were the element is to be inserted
+     * @param element the element that is to be inserted
+     * @return boolean
+     */
+    private boolean shouldIncrementSortedBeforeAdd(int index, E element){
+        if (this.isEmpty()) {
+            // List is sorted by definition if it contains only 1 item
+            return true;
+        }
+
+        if (this.size() == this.nSorted && this.ordening.compare(element, this.get(this.size() - 1)) >= 0) {
+            // All items were sorted AND the item we're adding is greater than the last item in the list
+            // OR it is equal to the last item (duplicate), therefore the list remains sorted
+            return true;
+        }
+
+        if (index < nSorted && this.ordening.compare(element, this.get(index - 1)) >= 0 && this.ordening.compare(element, this.get(index)) <= 0) {
+            // We're inserting an element in the sorted part of the list
+            // and the element at index - 1 is smaller than or equal to the new element
+            // and the element at index (which will be pushed to index + 1) is greater than or equal to the new element
+            return true;
+        }
+
+        return false;
     }
 
 
