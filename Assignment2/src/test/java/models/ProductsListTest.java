@@ -15,16 +15,16 @@ public class ProductsListTest {
 
     @BeforeEach
     private void setup() {
-//        products = new OrderedArrayList<Product>(Comparator.comparing(Product::getBarcode));
-//        PurchaseTracker.importItemsFromFile(products,
-//                ProductsListTest.class.getResource("/products12.txt").getPath(),
-//                Product::fromLine);
-//        product1 = products.get(0);
-//        product2 = products.get(1);
-//        product6 = products.get(5);
-//        product2a = new Product(222222222222222L, "", 0.0);
-//        product3a = new Product(333333333333334L, "geraspte wortelen", 1.00);
-//        product3b = new Product(333333333333335L, "snoeptomaatjes", 2.50);
+        products = new OrderedArrayList<Product>(Comparator.comparing(Product::getBarcode));
+        PurchaseTracker.importItemsFromFile(products,
+                ProductsListTest.class.getResource("/products12.txt").getPath(),
+                Product::fromLine);
+        product1 = products.get(0);
+        product2 = products.get(1);
+        product6 = products.get(5);
+        product2a = new Product(222222222222222L, "", 0.0);
+        product3a = new Product(333333333333334L, "geraspte wortelen", 1.00);
+        product3b = new Product(333333333333335L, "snoeptomaatjes", 2.50);
 
     }
 
