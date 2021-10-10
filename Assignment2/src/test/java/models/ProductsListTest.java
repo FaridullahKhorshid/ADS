@@ -15,16 +15,16 @@ public class ProductsListTest {
 
     @BeforeEach
     private void setup() {
-        products = new OrderedArrayList<Product>(Comparator.comparing(Product::getBarcode));
-        PurchaseTracker.importItemsFromFile(products,
-                ProductsListTest.class.getResource("/products12.txt").getPath(),
-                Product::fromLine);
-        product1 = products.get(0);
-        product2 = products.get(1);
-        product6 = products.get(5);
-        product2a = new Product(222222222222222L, "", 0.0);
-        product3a = new Product(333333333333334L, "geraspte wortelen", 1.00);
-        product3b = new Product(333333333333335L, "snoeptomaatjes", 2.50);
+//        products = new OrderedArrayList<Product>(Comparator.comparing(Product::getBarcode));
+//        PurchaseTracker.importItemsFromFile(products,
+//                ProductsListTest.class.getResource("/products12.txt").getPath(),
+//                Product::fromLine);
+//        product1 = products.get(0);
+//        product2 = products.get(1);
+//        product6 = products.get(5);
+//        product2a = new Product(222222222222222L, "", 0.0);
+//        product3a = new Product(333333333333334L, "geraspte wortelen", 1.00);
+//        product3b = new Product(333333333333335L, "snoeptomaatjes", 2.50);
 
     }
 
@@ -93,6 +93,98 @@ public class ProductsListTest {
         for (int index = 0; index < products.size(); index++) {
             assertEquals(index, products.indexOf(products.get(index)));
         }
+    }
+
+    @Test
+    public void removingFinalSortedIndexSustainsRepresentationInvariant() {
+        class IntComparator implements Comparator<Integer> {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o1, o2);
+            }
+        }
+        IntComparator comparator = new IntComparator();
+        OrderedArrayList<Integer> list = new OrderedArrayList<Integer>(comparator);
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(2);
+        assertSame(4, list.getnSorted());
+        list.remove(3);
+        assertSame(3, list.getnSorted());
+    }
+
+    @Test
+    public void removingFirstUnsortedIndexSustainsRepresentationInvariant(){
+        class IntComparator implements Comparator<Integer> {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o1, o2);
+            }
+        }
+        IntComparator comparator = new IntComparator();
+        OrderedArrayList<Integer> list = new OrderedArrayList<Integer>(comparator);
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(2);
+        assertSame(4, list.getnSorted());
+        list.remove(4);
+        assertSame(4, list.getnSorted());
+    }
+
+    @Test
+    public void addingSortedItemToSortedPartOfListSustainsInvariant() {
+        class IntComparator implements Comparator<Integer> {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o1, o2);
+            }
+        }
+        IntComparator comparator = new IntComparator();
+        OrderedArrayList<Integer> list = new OrderedArrayList<Integer>(comparator);
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(2);
+        assertSame(4, list.getnSorted());
+        list.add(3, 4);
+        assertSame(5, list.getnSorted());
+        list.add(5,5);
+        assertSame(6, list.getnSorted());
+        list.add(0,0);
+        assertSame(7, list.getnSorted());
+    }
+
+    @Test
+    public void addingItemToUnsortedPartOfListSustainsInvariant() {
+        class IntComparator implements Comparator<Integer> {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o1, o2);
+            }
+        }
+        IntComparator comparator = new IntComparator();
+        OrderedArrayList<Integer> list = new OrderedArrayList<Integer>(comparator);
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(2);
+        assertSame(4, list.getnSorted());
+        list.add(4, 5);
+        assertSame(5, list.getnSorted());
+        list.add(6, 9);
+        assertSame(5, list.getnSorted());
+        list.add(5, 3);
+        assertSame(5, list.getnSorted());
     }
 
     @Test

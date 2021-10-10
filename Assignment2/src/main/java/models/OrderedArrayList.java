@@ -48,53 +48,137 @@ public class OrderedArrayList<E>
     //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
 
     @Override
-    public boolean add(E element) {
-        boolean incrementSorted = shouldIncrementSortedBeforeAdd(this.size(), element);
-        if (incrementSorted) {
-            this.nSorted++;
+    public boolean remove(Object object) {
+        int index = this.indexOf(object);
+        int newNSorted = updateNSortedBeforeRemove(index, object);
+        boolean succeeded = super.remove(object);
+        if (!succeeded) {
+            return false;
+        }
+        this.nSorted = newNSorted;
+        return true;
+    }
+
+    @Override
+    public E remove(int index) {
+        int newNSorted = this.updateNSortedBeforeRemove(index, this.get(index));
+        E elem = super.remove(index);
+        this.nSorted = newNSorted;
+        return elem;
+    }
+
+    /**
+     * Checks what nSorted should be to sustain the invariant if the object at index were to be removed
+     * Uses this.ordening to compare.
+     *
+     * @param index the index were the element is to be inserted
+     * @param object the element that is to be inserted
+     * @return the int value that nSorted should be updated to if the remove succeeds
+     */
+    private int updateNSortedBeforeRemove(int index, Object object) {
+        if (index < this.nSorted) {
+            // Removing one element from the sorted part of the list, we now have 1 less sorted
+            return this.nSorted - 1;
         }
 
-        return super.add(element);
+        if (index >= nSorted && (index + 1 == this.size())) {
+            // We're removing the last unsorted element
+            return this.nSorted;
+        }
+
+        if (index == this.nSorted && this.ordening.compare(this.get(index), this.get(index + 1)) <= 0) {
+            // We're removing the first unsorted element and the second unsorted element happens to be
+            // greater than or equal to the last sorted element.
+            // e.g
+            // Before remove: 1, 2, 3, 4, 5, 8, 7   nSorted = 6
+            // Remove 8
+            // After remove: 1, 2, 3, 4, 5, 7       nSorted = 6
+            return this.nSorted;
+        }
+
+        return this.nSorted;
+    }
+
+    @Override
+    public boolean add(E element) {
+        int newNSorted = updateNSortedBeforeAdd(this.size(), element);
+        boolean succeeded = super.add(element);
+        if (!succeeded) {
+            return false;
+        }
+
+        this.nSorted = newNSorted;
+        return true;
     }
 
     @Override
     public void add(int index, E element) {
-        boolean incrementSorted = shouldIncrementSortedBeforeAdd(this.size(), element);
-        if (incrementSorted) {
-            this.nSorted++;
-        }
-
+        int newNSorted = updateNSortedBeforeAdd(index, element);
         super.add(index, element);
+        this.nSorted = newNSorted;
     }
 
     /**
-     * Checks if nSorted should be incremented to sustain the invariant if element were to be inserted at index
-     * using this.ordening to compare
+     * Checks what nSorted should be to sustain the invariant if element were to be inserted at index
+     * using this.ordening to compare.
      *
      * @param index the index were the element is to be inserted
      * @param element the element that is to be inserted
-     * @return boolean
+     * @return the int value that nSorted should be updated to if the insert succeeds
      */
-    private boolean shouldIncrementSortedBeforeAdd(int index, E element){
+    private int updateNSortedBeforeAdd(int index, E element){
         if (this.isEmpty()) {
             // List is sorted by definition if it contains only 1 item
-            return true;
+            return 1;
+        }
+
+        if (index == 0 && this.ordening.compare(element, this.get(1)) <= 0) {
+            // Adding to the front of the list and element is smaller or equal to first element
+            return this.nSorted + 1;
         }
 
         if (this.size() == this.nSorted && this.ordening.compare(element, this.get(this.size() - 1)) >= 0) {
-            // All items were sorted AND the item we're adding is greater than the last item in the list
-            // OR it is equal to the last item (duplicate), therefore the list remains sorted
-            return true;
+            /* All items were sorted AND the item we're adding is greater than the last item in the list
+             * OR it is equal to the last item (duplicate), therefore the list remains sorted
+             */
+            return this.nSorted + 1;
         }
 
-        if (index < nSorted && this.ordening.compare(element, this.get(index - 1)) >= 0 && this.ordening.compare(element, this.get(index)) <= 0) {
-            // We're inserting an element in the sorted part of the list
-            // and the element at index - 1 is smaller than or equal to the new element
-            // and the element at index (which will be pushed to index + 1) is greater than or equal to the new element
-            return true;
+        if (index <= nSorted) {
+            if (this.ordening.compare(element, this.get(index - 1)) >= 0 && this.ordening.compare(element, this.get(index)) <= 0) {
+                /* We're inserting an element in the sorted part of the list
+                 * and the element at index - 1 is smaller than or equal to the new element
+                 * and the element at index (which will be pushed to index + 1) is greater than or equal to the new element
+                 */
+                return this.nSorted + 1;
+            }
+
+            if (this.ordening.compare(element, this.get(index - 1)) >= 0 && this.ordening.compare(element, this.get(index)) > 0) {
+                /* We're inserting an element in the sorted part of the list
+                 * It is now sorted up to and including our new element
+                 * nSorted is equal to index + 1 (because our list is zero indexed)
+                 * e.g.
+                 * Before add: 1, 2, 3, 4, 5, 2     nSorted = 5
+                 * Inserting 6 at index 3
+                 * After add: 1, 2, 3, 6, 4, 5, 2   nSorted = 4
+                 */
+                return index + 1;
+            }
+
+            if (this.ordening.compare(element, this.get(index - 1)) < 0) {
+                /* We're inserting an element in the sorted part of the list
+                 * and the new element is smaller than its predecessor.
+                 * Our list is now sorted up to, but not including, the new element.
+                 * e.g.
+                 * Before add: 1, 2, 3, 4, 5, 2     nSorted = 5
+                 * Inserting 1 at index 2
+                 * After add: 1, 2, 1, 3, 4, 5, 2   nSorted = 2
+                 */
+                return index;
+            }
         }
 
-        return false;
+        return this.nSorted;
     }
 
 
@@ -233,5 +317,9 @@ public class OrderedArrayList<E>
 
             return false;
         }
+    }
+
+    public int getnSorted() {
+        return this.nSorted;
     }
 }
